@@ -1,13 +1,6 @@
 from fastapi import FastAPI
 
+from app.api.routers.articles import router as articles_router
+
 app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
+app.include_router(router=articles_router)
