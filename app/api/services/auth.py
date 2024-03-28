@@ -2,7 +2,7 @@ from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import CookieTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
 
-from app.api.services.manager import get_user_manager
+from app.api.services.users import get_user_manager
 from app.core.settings.app_settings import settings
 from app.db import User
 
