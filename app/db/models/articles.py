@@ -30,6 +30,9 @@ class Article(TimestampModel):
 
     comments: Mapped[list["Comment"]] = relationship(back_populates="article")
 
+    def __str__(self):
+        return f"{self.title} by {self.user_id}"
+
 
 class Comment(TimestampModel):
     __tablename__ = "comment"
@@ -41,3 +44,6 @@ class Comment(TimestampModel):
 
     user: Mapped["User"] = relationship(back_populates="comments")
     article: Mapped["Article"] = relationship(back_populates="comments")
+
+    def __str__(self):
+        return f"{self.text}"
