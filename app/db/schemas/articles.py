@@ -14,4 +14,4 @@ class ArticleCreate(ArticleBase):
 class Article(ArticleBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    author_id: int
+    user_id: int
