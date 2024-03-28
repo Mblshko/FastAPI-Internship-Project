@@ -3,6 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.services.auth import current_active_user
+from app.db import User
 from app.db.schemas.articles import Article, ArticleCreate
 from app.db.base import get_db
 from app.api.services.articles import ArticlesCRUD
@@ -25,10 +27,24 @@ async def get_article(article_id: int, session: AsyncSession = Depends(get_db)):
 async def create_article(
     article_data: Annotated[ArticleCreate, Depends()],
     session: AsyncSession = Depends(get_db),
+    user: User = Depends(current_active_user),
 ):
-    return await ArticlesCRUD.create_article(session=session, article_data=article_data)
+    return await ArticlesCRUD.create_article(
+        session=session, article_data=article_data, user=user
+    )
 
 
 @router.delete("/{article_id}", status_code=204)
 async def delete_article(article_id: int, session: AsyncSession = Depends(get_db)):
     return await ArticlesCRUD.delete_article(article_id=article_id, session=session)
+
+
+@router.put("/{article_id}", response_model=Article)
+async def update_article(
+    article_id: int,
+    article_data: Annotated[ArticleCreate, Depends()],
+    session: AsyncSession = Depends(get_db),
+):
+    return await ArticlesCRUD.update_article(
+        article_id=article_id, article_data=article_data, session=session
+    )
