@@ -1,39 +1,43 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import String, Text, ForeignKey
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from .users import User
 
 
 class TimestampModel(Base):
     __abstract__ = True
 
-    created = Column(DateTime, default=datetime.now())
-    updated = Column(DateTime, default=datetime.now())
+    created: Mapped[datetime] = mapped_column(default=datetime.now())
+    updated: Mapped[datetime] = mapped_column(default=datetime.now())
 
 
 class Article(TimestampModel):
-    __tablename__ = "articles"
+    __tablename__ = "article"
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(255), unique=True)
-    content = Column(String(1000))
-    is_published = Column(Boolean, default=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(255), unique=True)
+    content: Mapped[str] = mapped_column(Text, default="", server_default="")
+    is_published: Mapped[bool] = mapped_column(default=True)
 
-    author_id = Column(Integer, ForeignKey("users.id"))
-    author = relationship("User", back_populates="articles")
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="articles")
 
-    comments = relationship("Comment", back_populates="article")
+    comments: Mapped[list["Comment"]] = relationship(back_populates="article")
 
 
 class Comment(TimestampModel):
-    __tablename__ = "comments"
+    __tablename__ = "comment"
 
-    id = Column(Integer, primary_key=True)
-    text = Column(String(255))
-    article_id = Column(Integer, ForeignKey("articles.id"))
-    author_id = Column(Integer, ForeignKey("users.id"))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    text: Mapped[str] = mapped_column(String(255), nullable=False)
+    article_id: Mapped[int] = mapped_column(ForeignKey("article.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
-    author = relationship("User", back_populates="comment")
-    article = relationship("Article", back_populates="comment")
+    user: Mapped["User"] = relationship(back_populates="comments")
+    article: Mapped["Article"] = relationship(back_populates="comments")

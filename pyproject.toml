@@ -16,7 +16,11 @@ asyncpg = "^0.29.0"
 python-dotenv = "^1.0.1"
 greenlet = "^3.0.3"
 pydantic-settings = "^2.2.1"
+fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
 
 [build-system]
 requires = ["poetry-core"]
