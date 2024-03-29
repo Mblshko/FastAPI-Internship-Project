@@ -22,3 +22,14 @@ async def create_comment(
     return await CommentsService.create_comment(
         article_id=article_id, comment_data=comment_data, session=session, user=user
     )
+
+
+@router.delete("/{article_id}", status_code=204)
+async def delete_comment(
+    comment_id: int,
+    session: AsyncSession = Depends(get_db),
+    user: User = Depends(current_active_user),
+):
+    return await CommentsService.delete_comment(
+        comment_id=comment_id, session=session, user=user
+    )
