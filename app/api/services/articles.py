@@ -22,9 +22,14 @@ class ArticlesCRUD:
     @staticmethod
     async def detail_article(session: AsyncSession, article_id: int) -> Article | None:
         try:
-            stmt = select(Article).filter_by(id=article_id)
+            stmt = (
+                select(Article, Comment)
+                .join(Article.comments)
+                .where(Article.id == article_id)
+            )
             result = await session.execute(stmt)
-            return result.scalar_one()
+            res = result.scalar()
+            return res
         except:
             raise HTTPException(status_code=404, detail="Article not found")
 
