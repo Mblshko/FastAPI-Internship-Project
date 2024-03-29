@@ -28,7 +28,9 @@ class Article(TimestampModel):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="articles")
 
-    comments: Mapped[list["Comment"]] = relationship(back_populates="article")
+    comments: Mapped[list["Comment"]] = relationship(
+        back_populates="article", lazy="selectin"
+    )
 
     def __str__(self):
         return f"{self.title} by {self.user_id}"
@@ -38,7 +40,7 @@ class Comment(TimestampModel):
     __tablename__ = "comment"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    text: Mapped[str] = mapped_column(String(255), nullable=False)
+    text: Mapped[str] = mapped_column(String(255))
     article_id: Mapped[int] = mapped_column(ForeignKey("article.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
