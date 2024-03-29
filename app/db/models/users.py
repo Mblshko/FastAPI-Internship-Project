@@ -33,9 +33,8 @@ class Profile(Base):
     __tablename__ = "profile"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(50), unique=True)
-    first_name: Mapped[str] = mapped_column(String(50))
-    last_name: Mapped[str] = mapped_column(String(50))
+    first_name: Mapped[str] = mapped_column(String(50), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), unique=True)
 
     user: Mapped["User"] = relationship(back_populates="profile")
