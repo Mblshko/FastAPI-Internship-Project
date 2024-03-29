@@ -4,6 +4,7 @@ from app.api.routers.articles import router as articles_router
 from app.api.routers.comments import router as comments_router
 from app.api.routers.profile import router as profile_router
 from app.api.services.auth import auth_backend, fastapi_users, current_active_user
+from app.core.middelware import CheckActiveUser
 from app.db import User
 from app.db.schemas.users import UserRead, UserCreate
 
@@ -34,3 +35,7 @@ app.include_router(
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
     return {"message": f"Hello {user.username}!"}
+
+
+check_active_user = CheckActiveUser()
+app.middleware("http")(check_active_user)
