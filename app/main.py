@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 
 from app.api.routers.articles import router as articles_router
+from app.api.routers.comments import router as comments_router
 from app.api.services.auth import auth_backend, fastapi_users, current_active_user
 from app.db import User
 from app.db.schemas.users import UserRead, UserCreate
@@ -12,6 +13,8 @@ app.include_router(
     prefix="/articles",
     tags=["articles"],
 )
+
+app.include_router(router=comments_router, prefix="/comment", tags=["comments"])
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
