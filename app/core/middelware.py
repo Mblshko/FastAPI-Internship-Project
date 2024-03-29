@@ -1,7 +1,7 @@
 from fastapi import Request
 
 
-class CheckActiveUser:
+class TestMiddelware:
 
     async def __call__(self, request: Request, call_next):
         print(f"Request: {request.base_url.hostname}{request.url.path}")
