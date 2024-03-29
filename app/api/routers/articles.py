@@ -4,10 +4,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.services.auth import current_active_user
-from app.api.services.comments import CommentsService
 from app.db import User
 from app.db.schemas.articles import Article, ArticleCreate, ArticleDetail
-from app.db.schemas.comments import Comment, CommentCreate
 from app.db.base import get_db
 from app.api.services.articles import ArticlesCRUD
 
@@ -49,16 +47,4 @@ async def update_article(
 ):
     return await ArticlesCRUD.update_article(
         article_id=article_id, article_data=article_data, session=session
-    )
-
-
-@router.post("/{article_id}/comment", response_model=Comment)
-async def create_comment(
-    article_id: int,
-    comment_data: Annotated[CommentCreate, Depends()],
-    session: AsyncSession = Depends(get_db),
-    user: User = Depends(current_active_user),
-):
-    return await CommentsService.create_comment(
-        article_id=article_id, comment_data=comment_data, session=session, user=user
     )
