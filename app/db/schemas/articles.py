@@ -1,3 +1,5 @@
+from app.db.schemas.comments import Comment
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -12,6 +14,12 @@ class ArticleCreate(ArticleBase):
 
 
 class Article(ArticleBase):
+    """Response"""
+
     model_config = ConfigDict(from_attributes=True)
     id: int
     user_id: int
+
+
+class ArticleDetail(Article):
+    comments: list[Comment]

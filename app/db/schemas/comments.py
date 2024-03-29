@@ -9,8 +9,10 @@ class CommentCreate(CommentBase):
     pass
 
 
-class CommentRead(CommentBase):
+class Comment(CommentBase):
+    """Response"""
+
     model_config = ConfigDict(from_attributes=True)
     id: int
-    user_id: str
-    article_id: str
+    user_id: int
+    article_id: int
