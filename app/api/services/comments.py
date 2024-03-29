@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import delete
 
 from app.db import User, Comment
 from app.db.schemas.comments import CommentCreate
@@ -18,5 +19,8 @@ class CommentsService:
         return comment
 
     @staticmethod
-    async def delete_comment(session: AsyncSession, comment_id: int):
-        pass
+    async def delete_comment(session: AsyncSession, comment_id: int, user: User):
+        stmt = delete(Comment).where(Comment.id == comment_id)
+        if Comment.user_id == user.id:
+            await session.execute(stmt)
+            await session.commit()
