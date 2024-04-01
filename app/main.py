@@ -7,9 +7,10 @@ from app.api.services.auth import auth_backend, fastapi_users, current_active_us
 from app.core.middelware import TestMiddelware
 from app.db import User
 from app.db.schemas.users import UserRead, UserCreate
+from app.core.settings.app_settings import settings
 
 
-app = FastAPI()
+app = FastAPI(**settings.fastapi_kwargs())
 app.include_router(
     router=articles_router,
     prefix="/articles",
