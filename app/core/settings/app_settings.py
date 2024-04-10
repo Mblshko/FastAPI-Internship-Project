@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import PostgresDsn, SecretStr
 
-from app.core.config import BaseAppSettings
+from app.core.settings.base import BaseAppSettings
 
 
 class AppSettings(BaseAppSettings):
@@ -32,6 +32,3 @@ class AppSettings(BaseAppSettings):
             "title": self.title,
             "version": self.version,
         }
-
-
-settings = AppSettings()

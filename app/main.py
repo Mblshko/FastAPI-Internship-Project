@@ -1,42 +1,34 @@
 from fastapi import FastAPI, Depends
 
-from app.api.routers.articles import router as articles_router
-from app.api.routers.comments import router as comments_router
-from app.api.routers.profile import router as profile_router
-from app.api.services.auth import auth_backend, fastapi_users, current_active_user
+from app.api.routers.base import base_router
+from app.api.services.auth import current_active_user
+from app.core.config import settings
 from app.core.middelware import TestMiddelware
 from app.db import User
-from app.db.schemas.users import UserRead, UserCreate
-from app.core.settings.app_settings import settings
+from app.core.settings.app_settings import AppSettings
 
 
-app = FastAPI(**settings.fastapi_kwargs())
-app.include_router(
-    router=articles_router,
-    prefix="/articles",
-    tags=["Articles"],
-)
+def setup_middleware(application: FastAPI) -> None:
+    middleware = TestMiddelware()
+    application.middleware("http")(middleware)
 
-app.include_router(router=comments_router, prefix="/comments", tags=["Comments"])
-app.include_router(router=profile_router, prefix="/profile", tags=["Profile"])
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["Auth"],
-)
+def setup_routers(application: FastAPI) -> None:
+    application.include_router(base_router)
 
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["Auth"],
-)
+
+def get_application(setting: AppSettings) -> FastAPI:
+    data = setting.fastapi_kwargs()
+    application = FastAPI(**data)
+
+    setup_routers(application)
+    setup_middleware(application)
+    return application
+
+
+app = get_application(settings)
 
 
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
     return {"message": f"Hello {user.username}!"}
-
-
-check_active_user = TestMiddelware()
-app.middleware("http")(check_active_user)

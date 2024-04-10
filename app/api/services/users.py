@@ -4,7 +4,7 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin
 
 from app.db.models.users import User, get_user_db
-from app.core.settings.app_settings import settings
+from app.core.config import settings
 
 SECRET = settings.secret_key
 
