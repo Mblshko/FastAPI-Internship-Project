@@ -14,9 +14,11 @@ class AppSettings(BaseAppSettings):
     title: str = "FastAPI example application"
     version: str = "0.0.0"
 
-    database_url: PostgresDsn
+    database_url: str = (
+        "postgresql+asyncpg://postgres:admin@localhost:5432/FastAPIdb_test"
+    )
 
-    secret_key: SecretStr
+    secret_key: str = "aaaa"
 
     api_prefix: str = "/api"
 
