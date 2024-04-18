@@ -1,0 +1,41 @@
+stages: # Этапы
+  - tests-stages
+  - deploy-stages
+
+variables: #переменные
+  NAME_SERVER: "STAGE"
+
+.script-deploy: &script-deploy #Anchor(якорь)
+    - echo "Deploying to $NAME_SERVER"
+    - docker compose down
+    - docker rmi <image_name>
+    - docker build -t <image_name> .
+    - docker compose up -d
+
+#Джобы(задачи)
+job_test_stage:
+  stage: tests-stages
+  before_script:
+    - echo "Building tests for $NAME_SERVER"
+    - docker build -t <image_name_test> .
+    - docker -f docker-compose-test.yml up -d
+  script:
+    - echo "Running tests for $NAME_SERVER"
+    - docker compose -f docker-compose-test.yml exec <image_name_test> pytest -vv
+  after_script:
+    - echo "Cleaning tests for $NAME_SERVER"
+    - docker compose -f docker-compose-test.yml down
+    - docker rmi <image_name_test>
+  tags:
+    - stage
+
+job_deploy_stage:
+  stage: deploy-stages
+  when: manual #ручной запуск
+  only: #ограничиваем ветку
+    refs:
+      - release
+  script:
+    - *script-deploy
+  tags:
+    - stage
