@@ -12,7 +12,7 @@ variables: #переменные
     - docker build -t <image_name> .
     - docker compose up -d
 
-#Джобы(задачи)
+#Джобы(задачи )
 job_test_stage:
   stage: tests-stages
   before_script:
@@ -31,7 +31,7 @@ job_test_stage:
 
 job_deploy_stage:
   stage: deploy-stages
-  when: manual #ручной запуск
+  when: manual #ручной запуск деплоя
   only: #ограничиваем ветку
     refs:
       - release
